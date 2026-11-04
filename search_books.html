@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Books - Mini Library</title>
+  <style>
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Arial, sans-serif; background: #f4f6f9; color: #263238;
+    }
+    header { background: #25476a; color: white; padding: 20px; text-align: center; }
+    header h1 { margin: 0 0 6px; }
+    nav { background: #18334e; padding: 12px; text-align: center; }
+    nav a { color: white; text-decoration: none; margin: 6px 10px; display: inline-block; }
+    nav a:hover { text-decoration: underline; }
+    main { max-width: 950px; margin: 28px auto; padding: 0 16px; }
+    .panel { background: white; padding: 22px; border-radius: 10px; box-shadow: 0 2px 8px #00000012; margin-bottom: 18px; }
+    h2 { margin-top: 0; color: #25476a; }
+    label { display: block; margin: 12px 0 5px; font-weight: bold; }
+    input, select { width: 100%; padding: 10px; border: 1px solid #bbc5ce; border-radius: 5px; font-size: 15px; }
+    button { background: #2878b8; color: white; border: 0; padding: 10px 16px; border-radius: 5px; cursor: pointer; margin-top: 14px; }
+    button:hover { background: #1d5d91; }
+    button.danger { background: #c0392b; }
+    button.secondary { background: #607d8b; }
+    .message { margin-top: 12px; font-weight: bold; }
+    .success { color: #187443; } .error { color: #b3261e; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .stat { background: #edf4fa; border-left: 5px solid #2878b8; padding: 16px; border-radius: 7px; }
+    .stat strong { display: block; font-size: 28px; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 14px; background: white; }
+    th, td { padding: 10px; border: 1px solid #d9e0e6; text-align: left; }
+    th { background: #eaf0f5; }
+    .table-wrap { overflow-x: auto; }
+    .small-button { margin: 2px; padding: 7px 10px; }
+    footer { text-align: center; color: #667; padding: 20px; }
+    @media (max-width: 600px) { nav a { margin: 5px; } .panel { padding: 16px; } }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Mini Library Management System</h1>
+    <p>Search Books | Responsible member: Izza</p>
+  </header>
+
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="add_books.html">Add Books</a>
+    <a href="edit_delete_books.html">Edit / Delete</a>
+    <a href="search_books.html">Search Books</a>
+    <a href="issue_books.html">Issue Books</a>
+    <a href="return_books.html">Return Books</a>
+  </nav>
+
+  <main>
+
+    <section class="panel">
+      <h2>Search the Library</h2>
+      <label for="searchInput">Search by title, author, category, or ISBN</label>
+      <input id="searchInput" type="text" placeholder="Start typing to search...">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Title</th><th>Author</th><th>Category</th><th>Status</th></tr></thead>
+          <tbody id="results"></tbody>
+        </table>
+      </div>
+      <p id="message" class="message"></p>
+    </section>
+    
+  </main>
+  <footer>Mini Library Management System - Beginner Project</footer>
+
+  <script>
+    // All six pages use this same browser storage key.
+    const STORAGE_KEY = "miniLibraryBooks";
+
+    // Read the saved books. If no books exist yet, start with an empty list.
+    function getBooks() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    // Save the complete book list in the browser.
+    function saveBooks(books) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+    }
+
+    // Show a message to the user.
+    function showMessage(elementId, message, type) {
+      const element = document.getElementById(elementId);
+      element.textContent = message;
+      element.className = "message " + type;
+    }
+
+
+    function displayResults() {
+      const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
+      const books = getBooks();
+      const matches = books.filter(book =>
+        [book.title, book.author, book.category, book.isbn]
+          .some(value => String(value || "").toLowerCase().includes(searchText))
+      );
+
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+
+      matches.forEach(book => {
+        const row = document.createElement("tr");
+        [book.id, book.title, book.author, book.category || "-", book.status].forEach(value => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+        results.appendChild(row);
+      });
+
+      document.getElementById("message").textContent =
+        matches.length === 0 ? "No matching books found." : matches.length + " book(s) found.";
+    }
+
+    document.getElementById("searchInput").addEventListener("input", displayResults);
+    displayResults();
+    
+  </script>
+</body>
+</html>

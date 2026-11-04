@@ -8,12 +8,11 @@ editing and deleting books, searching, issuing, and returning books.
 
 Table of Contents
 - Project Overview
-- Team Members and
-  Responsibilities
+- Team Members and  Responsibilities
 - Project Structure
 - Features
 - Technologies Used
-- Possible Future Improvements
+- Project Scope
 
 
 Project Overview
